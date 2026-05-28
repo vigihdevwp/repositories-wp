@@ -1,0 +1,41 @@
+{
+    "name": "vigihdevwp/repositories",
+    "description": "WordPress Repositories – Kumpulan repositori WordPress yang digunakan untuk memudah pengembangan.",
+    "type": "library",
+    "license": "Mit",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "keywords": [
+        "wordpress",
+        "repositories"
+    ],
+    "authors": [
+        {
+            "name": "vigih dev",
+            "email": "vigihdevwp@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "10.5.x-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "VigihdevWP\\Repositories\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VigihdevWP\\Repositories\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "dev": "php -S localhost:4377 local-dev/index.php"
+    },
+    "config": {
+        "process-timeout": 0
+    }
+}

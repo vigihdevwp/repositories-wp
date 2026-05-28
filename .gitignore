@@ -1,0 +1,20 @@
+# Dependency directories dot
+.DS_Store
+.amazonq
+.github
+.vscode
+.env
+phpunit.xml
+.phpunit.cache
+local-dev
+dev.php
+composer.lock
+vendor
+/tests
+/config
+scripts
+node_modules
+
+package.json
+package-lock.json
+nodemon.json
