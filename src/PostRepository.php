@@ -63,14 +63,60 @@ final class PostRepository
     }
 
     /**
-     * Mengambil daftar kategori dari post
-     * 
+     * Mengambil daftar kategori berdasarkan ID post
+     *
      * @param int $postId ID post yang diambil
-     * @return WP_Term[] Array of WP_Term objects
+     * @return WP_Term[] Daftar kategori dalam format array objek WP_Term
      */
     public function categories(int $postId): array
     {
-        $category = new CategoryRepository();
-        return $category->byPost($postId);
+
+        // Mengambil kategori menggunakan WordPress API
+        $categories = wp_get_post_categories($postId, ['fields' => 'all']);
+
+        // Jika tidak ada kategori, kembalikan array kosong
+        if (empty($categories)) {
+            return [];
+        }
+
+        // Konversi kategori ke objek TermDto
+        $result = [];
+        foreach ($categories as $category) {
+            if ($category instanceof WP_Term) {
+                $result[] = $category;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Mengambil daftar taksonomi berdasarkan ID post
+     *  
+     * @param int $postId ID post yang diambil
+     * @param string $post_type Jenis post (mis: 'post', 'page')
+     * @return WP_Term[] Daftar taksonomi dalam format array objek WP_Term
+     */
+    public function taxonomies(int $postId, string $post_type): array
+    {
+        // Mengambil semua taxonomy terms yang terkait dengan post
+        $taxonomies = [];
+
+        // Dapatkan semua registered taxonomies
+        $registered_taxonomies = get_taxonomies(['object_type' => [$post_type]]);
+
+        foreach ($registered_taxonomies as $taxonomy) {
+            $terms = wp_get_post_terms($postId, $taxonomy);
+
+            if (!empty($terms) && !is_wp_error($terms)) {
+                foreach ($terms as $term) {
+                    if ($term instanceof WP_Term) {
+                        $taxonomies[] = $term;
+                    }
+                }
+            }
+        }
+
+        return $taxonomies;
     }
 }
