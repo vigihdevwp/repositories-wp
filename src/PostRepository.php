@@ -6,11 +6,51 @@ namespace VigihdevWP\Repositories;
 
 use WP_Post;
 use WP_Term;
+use WP_User;
 
 final class PostRepository
 {
 
     public function __construct() {}
+
+    /**
+     * Mengambil post terbaru
+     *
+     * @param int $limit Jumlah post yang diambil
+     * @param array $args Additional WP_Query arguments
+     * @return WP_Post[] Array of WP_Post objects
+     */
+    public function recent(int $limit = 7, array $args = []): array
+    {
+        $defaults = [
+            'post_type' => 'post',
+            'post_status' => 'publish',
+            'orderby' => 'DESC',
+            'posts_per_page' => $limit,
+        ];
+
+        $query = new \WP_Query(array_merge($defaults, $args));
+
+        return $query->posts;
+    }
+
+    /**
+     * Mengambil pengguna yang memuat post
+     *
+     * @param int $postId ID post yang diambil
+     * @return WP_User|false Pengguna yang memuat post, atau false jika post tidak ditemukan
+     */
+    public function ofUser(int $postId): WP_User|false
+    {
+        $post = WP_Post::get_instance($postId);
+
+        if (!$post) {
+            return false;
+        }
+
+        $user = get_user_by('ID', $post->post_author);
+        return $user ?: false;
+    }
 
     /**
      * Mengambil post secara acak
